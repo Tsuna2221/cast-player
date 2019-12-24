@@ -1,0 +1,2 @@
+GET https://itunes.apple.com/search?country=br&media=podcast&term=942491627
+Content-Type: application/json
