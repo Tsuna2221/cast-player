@@ -12,11 +12,13 @@ export default class Header extends Component {
         this.labelHeight = new Animated.Value(115 - buttonContainer.height);
     }
 
-    render() {
+    render() {        
+        this.collapseLabel()
+
         return (
             <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#FF0055', '#046CA2']} style={mainHeader}>
                 <View style={[buttonContainer]}>
-                    <TouchableOpacity onPress={this.collapseLabel}>
+                    <TouchableOpacity onPress={() => null}>
                         <Icon size={30} name="menu" color="#fff"/>
                     </TouchableOpacity>
                     <Icon size={28} name="dots-vertical" color="#fff"/>
@@ -29,19 +31,17 @@ export default class Header extends Component {
     }
 
     state = {
-        collapsed: false,
+
     }
 
     collapseLabel = () => {
-        const { collapsed } = this.state;
+        const { viewPosition } = this.props, maxVal = 115 - buttonContainer.height;
 
-        Animated.timing(
-            this.labelHeight,
-            {
-                toValue: collapsed ? 115 - buttonContainer.height : 0,
-                duration: 200,
-                easing: Easing.ease,
-            }
-        ).start(() => this.setState({collapsed: !collapsed}))
+        // toValue: viewPosition === 0 ? 115 - buttonContainer.height : viewPosition,
+        Animated.timing(this.labelHeight, {
+            toValue: viewPosition > maxVal ? 0 : viewPosition < 0 ? 0 : Math.abs(viewPosition - maxVal),
+            duration: 1,
+            easing: Easing.ease,
+        }).start();
     }
 }

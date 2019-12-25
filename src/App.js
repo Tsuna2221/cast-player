@@ -9,33 +9,42 @@ import Explore from './components/Explore'
 
 export default class App extends Component {
     render() {
-		const { file } = this.state, { size, name, type, uri } = file
+		const { file, viewPosition } = this.state, { size, name, type, uri } = file
 
         return (
-			<View>
-				<Header/>
-				<Explore/>
-			</View>
+			<Fragment>
+				<View style={{backgroundColor: "#0E0E16", flex: 1, height: "100%"}}>
+					<Header viewPosition={viewPosition}/>
+					<Explore hideLabel={this.hideLabel}/>
+				</View>
+				{/* Footer */}
+				<View style={{width: "100%", height: 30, backgroundColor: "#fff"}}>
+					<Text>Text</Text>
+				</View>
+			</Fragment>
         );
 	}
 
 	state = {
-		file: {}
+		file: {},
+		viewPosition: 115
 	}
 
-	componentDidMount = () => TrackPlayer.setupPlayer()
-	
-	getFile = () => DocumentPicker.pick().then(async (file) => {
-		await TrackPlayer.add({
-			id: file.size,
-			url: file.uri,
-			title: file.name,
-			artist: "Artist Name",
-		});
-	
-		// Starts playing it
-		TrackPlayer.play();
+	hideLabel = (pos) => this.setState({...this.state, viewPosition: pos})
 
-		this.setState({file})
-	})
+	// componentDidMount = () => TrackPlayer.setupPlayer()
+	
+	// getFile = () => DocumentPicker.pick().then(async (file) => {
+	// 	await TrackPlayer.add({
+	// 		id: file.size,
+	// 		url: file.uri,
+	// 		title: file.name,
+	// 		artist: "Artist Name",
+	// 	});
+	
+	// 	// Starts playing it
+	// 	TrackPlayer.play();
+
+	// 	this.setState({file})
+	// })
 }

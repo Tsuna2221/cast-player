@@ -1,3 +1,7 @@
 rootProject.name = 'trackplayer'
+include ':react-native-palette'
+project(':react-native-palette').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-palette/android')
+include ':react-native-vibrant-color'
+project(':react-native-vibrant-color').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vibrant-color/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
