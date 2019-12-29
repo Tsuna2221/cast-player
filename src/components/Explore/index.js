@@ -16,27 +16,20 @@ export default class Explore extends Component {
     render() {
         const { mainFeed } = this.state
         return (
-            <ScrollView onScroll={(event) => this.handleScroll(event)}>
+            <Fragment>
                 { 
                     mainFeed.length > 0 ?
                         mainFeed.map(({title, items}) => items.length > 5 && title !== "Podcasts" ? <ItemSlider label={title} items={items}/> : null)
                     :
                         <ActivityIndicator size="large"/>
                 }
-            </ScrollView>
+            </Fragment>
         );
     }
 
     state = {
-        mainFeed: []
+        mainFeed: [],
     }
 
     componentDidMount = () => getMainCasts().then(res => this.setState({mainFeed: res}));
-
-    handleScroll = (event) => {
-        const { hideLabel } = this.props;
-        let yPosition = event.nativeEvent.contentOffset.y;
-
-        hideLabel(yPosition);
-    }
 }
