@@ -15,7 +15,7 @@ export default class  extends Component {
                     {
                         items.map(({artworkUrl100, name, artistName, id}, index) => {
                             return (
-                                <View style={{flexDirection: "column", maxWidth: 116, marginTop: 15, marginLeft: index === 0 ? 20 : 8}}>
+                                <View key={id} style={{flexDirection: "column", maxWidth: 116, marginTop: 15, marginLeft: index === 0 ? 20 : 8}}>
                                     <View key={id} style={{ backgroundColor: "#ff0055" }}>
                                         <Image style={{width: 116, height: 116}} source={{uri: artworkUrl100}}/>
                                     </View>
