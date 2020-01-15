@@ -11,3 +11,6 @@ export const getMainCasts = () => axios.get("https://rss.itunes.apple.com/api/v1
             return {title: genre, items: feedSection}
         })
     })
+
+export const getFeeds = (term, fetchType) => axios.get(`https://itunes.apple.com/search?term=${term}&media=podcast`)
+    .then(({data: { results }}) => fetchType === "single" ? results[0] : results)

@@ -3,47 +3,42 @@ import { Text, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Icon from "react-native-vector-icons/MaterialIcons"
+import { createStackNavigator } from 'react-navigation-stack';
+
+import Temp from './Temp'
 
 import Explore from "./Explore"
+import CastPage from "./CastPage"
 
-const TabNavigator = createBottomTabNavigator(
-    {
-        Explorar: {
-            screen: Explore,
-            navigationOptions: {
-                tabBarIcon: ({ tintColor }) => <Icon name="library-books" size={22} color={tintColor} />
-            }
-        },
-        Buscar: {
-            screen: () => <View/>,
-            navigationOptions: {
-                tabBarIcon: ({ tintColor }) => <Icon name="search" size={22} color={tintColor} />
-            }
-        },
-        Feeds: {
-            screen: () => <View/>,
-            navigationOptions: {
-                tabBarIcon: ({ tintColor }) => <Icon name="list" size={22} color={tintColor} />
-            }
-        },
-        Downloads: {
-            screen: () => <View/>,
-            navigationOptions: {
-                tabBarIcon: ({ tintColor }) => <Icon name="file-download" size={22} color={tintColor} />
-            }
-        },
+const StackRoutes = {
+    Explorar: {
+        screen: (props) => <Temp {...props} headLabel="Explorar"><Explore {...props}/></Temp>
     },
-    {
-        initialRouteName: 'Explorar',
-        tabBarOptions: {
-            style: {
-                height: 45,
-                backgroundColor: "#0B0A17"
-            },
-            activeTintColor: "#FF0055",
-            inactiveTintColor: "#C7C7C7" 
-        }
-    }
-);
+    Buscar: {
+        screen: (props) => <Temp {...props} headLabel="Buscar"></Temp>
+    },
+    Feeds: {
+        screen: (props) => <Temp {...props} headLabel="Feeds"></Temp>
+    },
+    Downloads: {
+        screen: (props) => <Temp {...props} headLabel="Downloads"></Temp>
+    },
+    CastPage: {
+        screen: (props) => <Temp {...props}><CastPage {...props}/></Temp>
+    },
+}
 
-export default createAppContainer(TabNavigator);
+const StackConfig = {
+    initialRouteName: 'Explorar',
+    headerMode: 'none',
+    unmountInactiveRoutes: true,
+    transitionConfig: () => ({
+        transitionSpec: {
+            duration: 0
+        }
+    })
+}
+
+const StackNavigator = createStackNavigator(StackRoutes, StackConfig)
+
+export default createAppContainer(StackNavigator);

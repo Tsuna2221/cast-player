@@ -14,7 +14,9 @@ import style from './components/Header/style'
 export default class App extends Component {
     render() {
         return (
-			<Router/>
+			<Fragment>
+				<Router/>
+			</Fragment>
         );
 	}
 
