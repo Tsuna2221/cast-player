@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import style from './style'
 
 const { rowAlign, textTitle, newContainer } = style
-const { height, width } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default class EpisodeItem extends Component {
     render() {

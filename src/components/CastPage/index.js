@@ -9,8 +9,6 @@ import { getFeeds } from "../../client"
 //Components
 import EpisodeItem from './EpisodeItem'
 
-import style from './style'
-
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -34,7 +32,7 @@ const styles = StyleSheet.create({
 
 export default class CastPage extends Component {
     render() {
-        const { state: { feed }, props: { navigation: { state: { params: { id, image, colors} } } } } = this;
+        const { state: { feed }, props: { navigation: { state: { params: { id, image, colors } } } } } = this;
 
         return (
             <Fragment>
@@ -76,7 +74,6 @@ export default class CastPage extends Component {
                 .then((response) => response.text())
                 .then((responseData) => rssParser.parse(responseData))
                 .then((rss) => this.setState({feed: rss}))
-                .then(() => console.log(this))
         })
     }
 }
