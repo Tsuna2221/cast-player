@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { ActivityIndicator, Animated, ScrollView, View, Text } from 'react-native';
+import { Keyboard, Animated, ScrollView, View, Text } from 'react-native';
 
 //Style
 import style from './Explore/style'
@@ -21,11 +21,15 @@ export default class Temp extends Component {
             scrollY: new Animated.Value(0),
             file: {},
             mainFeed: [],
+            keyboardStatus: false
         }
+
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this.keyboardListener(true));
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => this.keyboardListener(false));
     }
     
     render() {
-        const { state: { file, mainFeed }, props: { headLabel } } = this, { size, name, type, uri } = file, btnHeight = 62.1;
+        const { state: { file, keyboardStatus }, props: { headLabel } } = this, { size, name, type, uri } = file, btnHeight = 62.1;
         const maxHeight = 115 - btnHeight;
         const distance = (maxHeight + btnHeight) - btnHeight;
 
@@ -53,14 +57,28 @@ export default class Temp extends Component {
                         }
                         }])} scrollEventThrottle={16}
                     >
-                        {this.props.children}
+                        {{...this.props.children, keyboardStatus}}
                     </ScrollView>
                 </View>
-                <FooterPlayer/>
-                <FooterNavigator navigate={this.props.navigation.dispatch} selected={headLabel}/>
+                {
+                    !keyboardStatus ? 
+                        <Fragment>
+                            <FooterPlayer/>
+                            <FooterNavigator navigate={this.props.navigation.dispatch} selected={headLabel}/>
+                        </Fragment>
+                    :
+                        null
+                }
             </Fragment>
         );
     }
 
-    componentDidMount = () => getMainCasts().then(res => this.setState({mainFeed: res}));
+    componentDidMount = () => getMainCasts().then(res => this.setState({mainFeed: res}))
+    
+    componentWillUnmount = () => {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+    }
+    
+    keyboardListener = (keyboardStatus) => this.setState({...this.state, keyboardStatus})
 }

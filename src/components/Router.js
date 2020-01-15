@@ -9,13 +9,14 @@ import Temp from './Temp'
 
 import Explore from "./Explore"
 import CastPage from "./CastPage"
+import Search from "./SearchPage"
 
 const StackRoutes = {
     Explorar: {
         screen: (props) => <Temp {...props} headLabel="Explorar"><Explore {...props}/></Temp>
     },
     Buscar: {
-        screen: (props) => <Temp {...props} headLabel="Buscar"></Temp>
+        screen: (props) => <Temp {...props} headLabel="Buscar"><Search {...props}/></Temp>
     },
     Feeds: {
         screen: (props) => <Temp {...props} headLabel="Feeds"></Temp>
@@ -29,7 +30,7 @@ const StackRoutes = {
 }
 
 const StackConfig = {
-    initialRouteName: 'Explorar',
+    initialRouteName: 'Buscar',
     headerMode: 'none',
     unmountInactiveRoutes: true,
     transitionConfig: () => ({
