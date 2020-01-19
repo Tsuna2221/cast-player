@@ -14,13 +14,17 @@ import style from './components/Header/style'
 export default class App extends Component {
     render() {
         return (
-			<Fragment>
-				<Router/>
-			</Fragment>
+			<Router/>
         );
 	}
 
-	// componentDidMount = () => TrackPlayer.setupPlayer()
+	componentDidMount = () => TrackPlayer.updateOptions({
+		capabilities: [
+			TrackPlayer.CAPABILITY_PLAY,
+			TrackPlayer.CAPABILITY_PAUSE,
+			TrackPlayer.CAPABILITY_STOP
+		]
+	}).then(() => TrackPlayer.setupPlayer())
 	
 	// getFile = () => DocumentPicker.pick().then(async (file) => {
 	// 	await TrackPlayer.add({

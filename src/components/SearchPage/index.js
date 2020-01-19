@@ -7,7 +7,6 @@ import style from './style'
 
 //Components;
 import RecentSearches from './RecentSearches'
-import RecentResults from './RecentResults'
 import QueryResults from './QueryResults'
 
 //Client
@@ -21,7 +20,7 @@ export default class Search extends Component {
     render() {
         const { props: { navigation }, state: { searchInput, recentResults, recentSearches, queryingStatus, searching, results } } = this;
         const iconWidth = (100 / width) * 100;
-        console.log(results)
+
         return (
             <View>
                 <NavigationEvents onDidFocus={this.focusReset}/>
@@ -40,6 +39,12 @@ export default class Search extends Component {
                             <QueryResults navigation={navigation} results={results}/>
                     :
                         <Fragment>
+                            {
+                                recentResults.length > 0 ?
+                                <QueryResults fromResults={true} navigation={navigation} results={recentResults}/>
+                                :
+                                null
+                            }
                             <RecentSearches fetchQuery={this.fetchQuery} searches={recentSearches}/>
                         </Fragment>
                 }
@@ -58,7 +63,13 @@ export default class Search extends Component {
 
     focusReset = () => this.setState({...this.state, queryingStatus: false})
 
-    componentDidMount = () => AsyncStorage.getItem("recentSearches").then(res => this.setState({...this.state, recentSearches: res ? JSON.parse(res) : []}))
+    componentDidMount = () => AsyncStorage.multiGet(["recentSearches", "recentResults"]).then(([rS, rR]) => {
+        this.setState({
+            ...this.state, 
+            recentSearches: rS[1] ? JSON.parse(rS[1]) : [],
+            recentResults: rR[1] ? JSON.parse(rR[1]) : [],
+        })
+    })
 
     updateInput = (input) => this.setState({...this.state, searchInput: input})
 
@@ -71,11 +82,14 @@ export default class Search extends Component {
                 if(!fromResults){
                     const searchStorage = await AsyncStorage.getItem("recentSearches");
                     const data = JSON.parse(searchStorage) || []
+
+                    if(!data.map(i => i.toLowerCase()).includes(searchInput.toLowerCase())){
+                        if(data) data.unshift(searchInput)
+                        if(data.length > 4) data.pop()
+                        
+                        AsyncStorage.setItem("recentSearches", JSON.stringify(data))
+                    }
                     
-                    if(data) data.unshift(searchInput)
-                    if(data.length > 4) data.pop()
-                
-                    return AsyncStorage.setItem("recentSearches", JSON.stringify(data))
                 }
             })
     }

@@ -40,6 +40,7 @@ export default class CastPage extends Component {
                     <SwiperFlatList
                     autoplay
                     autoplayDelay={2}
+                    loop
                     >
                         <View style={[styles.child, { backgroundColor: colors.averageColor }]}>
                             <Image style={{width: 130, height: 130}} source={{uri: image}}/>
@@ -54,7 +55,7 @@ export default class CastPage extends Component {
                 </View>
                 <FlatList
                     data={feed.items}
-                    renderItem={({ item }) => <EpisodeItem cover={image} episode={item}/>}
+                    renderItem={({ item }) => <EpisodeItem castId={id} cover={image} episode={{...item, castName: feed.title}}/>}
                     keyExtractor={item => item.id}
                     style={{marginTop: 10}}
                 />

@@ -10,14 +10,14 @@ const maxHeight = 115 - buttonContainer.height;
 
 export default class Header extends Component {
     render() {        
-        const { headerHeight, textOpacity, label } = this.props;
+        const { headerHeight, textOpacity, label, navigation } = this.props;
 
         return (
             <Animated.View style={{width: "100%", height: label ? headerHeight : 62.1, position: "absolute", overflow: "hidden", zIndex: 100}}>
                 <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#FF0055', '#046CA2']} style={[mainHeader]}>
                     <View style={[buttonContainer]}>
-                        <TouchableOpacity onPress={() => null}>
-                            <Icon size={30} name="menu" color="#fff"/>
+                        <TouchableOpacity onPress={() => label ? null : navigation.goBack()}>
+                            <Icon size={label ? 30 : 26} name={label ? "menu" : "arrow-left"} color="#fff"/>
                         </TouchableOpacity>
                         <Icon size={28} name="dots-vertical" color="#fff"/>
                     </View>

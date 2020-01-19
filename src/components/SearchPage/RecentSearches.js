@@ -17,7 +17,7 @@ export default RecentSearches = ({searches, fetchQuery}) => (
                             <TouchableNativeFeedback key={key} background={TouchableNativeFeedback.Ripple('#3C3C47')} onPress={() => fetchQuery(item, true)}>
                                 <View style={{width, paddingHorizontal: 20, height: 44, borderBottomColor: "#3c3c3c", borderBottomWidth: 0.5, flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                                     <Text style={{color: "#fff", fontSize: 16, marginBottom: 2}}>{item}</Text>
-                                    <Icon name="close" color="#fff" size={25}/>
+                                    <Icon name="close" color="#fff" size={20}/>
                                 </View>
                             </TouchableNativeFeedback>
                         ))

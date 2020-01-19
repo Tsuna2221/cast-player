@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Keyboard, Animated, ScrollView, View, Text } from 'react-native';
+import { Keyboard, Animated, ScrollView, View, Text, SafeAreaView } from 'react-native';
 
 //Style
 import style from './Explore/style'
@@ -29,10 +29,10 @@ export default class Temp extends Component {
     }
     
     render() {
-        const { state: { file, keyboardStatus }, props: { headLabel } } = this, { size, name, type, uri } = file, btnHeight = 62.1;
+        const { state: { file, keyboardStatus }, props: { headLabel, navigation } } = this, { size, name, type, uri } = file, btnHeight = 62.1;
         const maxHeight = 115 - btnHeight;
         const distance = (maxHeight + btnHeight) - btnHeight;
-
+        
         const textOpacity = this.state.scrollY.interpolate({
             inputRange: [0, 0, distance - 15],
             outputRange: [1, 1, 0],
@@ -48,7 +48,7 @@ export default class Temp extends Component {
         return (
             <Fragment>
                 <View style={{backgroundColor: "#0E0E16", flex: 1, height: "100%"}}>
-                    <Header label={headLabel} textOpacity={textOpacity} headerHeight={headerHeight}/>
+                    <Header navigation={navigation} label={headLabel} textOpacity={textOpacity} headerHeight={headerHeight}/>
                     <ScrollView contentContainerStyle={{paddingTop: headLabel ? 115 : btnHeight, paddingBottom: 10}} onScroll={Animated.event(
                         [{ nativeEvent: {
                             contentOffset: {
@@ -57,7 +57,9 @@ export default class Temp extends Component {
                         }
                         }])} scrollEventThrottle={16}
                     >
-                        {{...this.props.children, keyboardStatus}}
+                        <SafeAreaView style={{flex: 1}}>
+                            {this.props.children}
+                        </SafeAreaView>
                     </ScrollView>
                 </View>
                 {
@@ -73,7 +75,10 @@ export default class Temp extends Component {
         );
     }
 
-    componentDidMount = () => getMainCasts().then(res => this.setState({mainFeed: res}))
+    // componentDidMount = () => getMainCasts().then(res => this.setState({mainFeed: res}))
+    componentDidMount = () => {
+        
+    }
     
     componentWillUnmount = () => {
         this.keyboardDidShowListener.remove();

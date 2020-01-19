@@ -16,6 +16,7 @@ const {  } = style
 export default class Explore extends Component {
     render() {
         const { mainFeed } = this.state;
+
         return (
                 <Fragment>
                     { 
