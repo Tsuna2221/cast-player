@@ -33,9 +33,8 @@ const getDetailsAndNavigate = (item, navigate, fromResults) => colorsFromUrl(ite
 
 export default QueryResults = ({results, navigation, fromResults}) => {
     const { storedCasts, saveCast } = useContext(FeedContext);
-    const storeIds = storedCasts.map(({trackId}) => trackId);
-
-    console.log(storedCasts)
+    const storeIds = storedCasts ? storedCasts.map(({trackId}) => trackId) : [];
+    
     return (
         <Fragment>
             {

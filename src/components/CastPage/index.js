@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { View, Image, Text, ScrollView, ActivityIndicator, FlatList, Dimensions, StyleSheet } from 'react-native';
 import * as rssParser from 'react-native-rss-parser';
 import SwiperFlatList from 'react-native-swiper-flatlist';
+import RNBackgroundDownloader from 'react-native-background-downloader';
+import RNFetchBlob from 'rn-fetch-blob'
 
 //Client
 import { getFeeds } from "../../client"
@@ -10,6 +12,9 @@ import { getFeeds } from "../../client"
 import EpisodeItem from './EpisodeItem'
 
 const { width, height } = Dimensions.get('window');
+
+const { fs: { readFile } } = RNFetchBlob;
+const { documents } = RNBackgroundDownloader.directories;
 
 const styles = StyleSheet.create({
   container: {
@@ -67,14 +72,19 @@ export default class CastPage extends Component {
         feed: {}
     }
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
         const { navigation: { state: { params: { id, image } } } } = this.props;
+        const cachedFeed = await RNFetchBlob.fs.readFile(`${documents}/${id}.json`).catch(() => null);
 
-        getFeeds(id, "single").then((data) => {
-            fetch(data.feedUrl)
-                .then((response) => response.text())
-                .then((responseData) => rssParser.parse(responseData))
-                .then((rss) => this.setState({feed: rss}))
-        })
+        if(!cachedFeed){
+            return getFeeds(id, "single").then((data) => {
+                fetch(data.feedUrl)
+                    .then((response) => response.text())
+                    .then((responseData) => rssParser.parse(responseData))
+                    .then((rss) => this.setState({feed: rss}))
+            })
+        }
+
+        return this.setState({feed: JSON.parse(cachedFeed)})
     }
 }

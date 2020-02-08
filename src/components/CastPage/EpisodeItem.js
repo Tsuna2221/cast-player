@@ -5,6 +5,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import TrackPlayer from 'react-native-track-player';
 import RNBackgroundDownloader from 'react-native-background-downloader';
 import FastImage from 'react-native-fast-image'
+import RNFetchBlob from 'rn-fetch-blob';
+import AsyncStorage from '@react-native-community/async-storage';
+
+//Context
+import { DownloadContext } from '../../contexts/DownloadContext'
 
 import style from './style'
 
@@ -12,27 +17,28 @@ const { rowAlign, textTitle, newContainer } = style
 const { width } = Dimensions.get('window');
 
 export default class EpisodeItem extends Component {
+    static contextType = DownloadContext;
+
     render() {
-        const { cover, episode: { title, id, published, enclosures: [{ url, length, mimeType }], itunes: { duration, image } } } = this.props 
+        const { downloadCast, downloads } = this.context;
+        const { cover, castId, episode: { title, id, published, enclosures: [{ url, length, mimeType }], itunes: { duration, image } } } = this.props 
         const color = "#E1E1E1"
         const newDimensions = { marginLeft: 5.5, marginRight: 18, width: 44 }
         const interval = width - (Object.keys(newDimensions).map(key => newDimensions[key]).reduce((total, num) => total + num) + 14)
         const parsedDate = published.replace(/\s\+[0-9]+/, "");
         const date = new Date(parsedDate)
-        const { locale, stamp } = {
-            locale: date.toLocaleDateString(),
-            stamp: +date
-        }
+        const { locale, stamp } = { locale: date.toLocaleDateString(), stamp: +date }
+        const downloadMap = downloads.filter(({status}) => status === "complete").map(({name}) => name).includes(`${castId}_${stamp}`);
         
         return (
-            <TouchableNativeFeedback onPress={this.playCast} background={TouchableNativeFeedback.Ripple('#3C3C47')}>
+            <TouchableNativeFeedback onPress={() => this.playCast(stamp, downloadMap)} background={TouchableNativeFeedback.Ripple('#3C3C47')}>
                 <View style={{width: "100%", paddingHorizontal: 14}}>
                     <View style={[rowAlign, { justifyContent: "space-between" }]}>
                         <FastImage resizeMode={FastImage.resizeMode.contain} style={{width: 55, height: 55}} source={{uri: image ? image : cover}}/>
-                        <Text numberOfLines={2} style={[textTitle, {color}]}>{title}</Text>
+                        <Text numberOfLines={2} style={[textTitle, {color, flexDirection: "row", alignItems: "center"}]}>{title}</Text>
                         {
                             !this.state.progress ?
-                                <TouchableNativeFeedback onPress={() => this.downloadCast(stamp)}>
+                                <TouchableNativeFeedback onPress={() => downloadCast(stamp, castId, this.props.episode)}>
                                     <MCIcons name="dots-horizontal" color={color} size={30}/>
                                 </TouchableNativeFeedback>
                             :
@@ -52,7 +58,15 @@ export default class EpisodeItem extends Component {
                                     <Text style={{color, fontSize: 14.5, marginLeft: 3}}>{duration}</Text>
                                 </View>
                             </View>
-                            <Icon name="favorite-border" size={21} color={color} style={{paddingRight: 18}}/>
+                            <View style={{flexDirection: "row"}}>
+                                {
+                                    downloadMap ?
+                                        <Icon name="file-download" size={21} color="#fff"/>
+                                    :
+                                    null
+                                }
+                                <Icon name="favorite-border" size={21} color={color} style={{marginLeft: 6, paddingRight: 18}}/>
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -64,36 +78,17 @@ export default class EpisodeItem extends Component {
         progress: null
     }
 
-    playCast = () => {
+    playCast = (timestamp, exists) => {
         const { id, castName, title, published, enclosures: [{ url, length, mimeType }], itunes: { duration, image } } = this.props.episode;
+        const { castId } = this.props;
+        const storedName = `${RNBackgroundDownloader.directories.documents}/media/${castId}_${timestamp}.mp3`
 
         TrackPlayer.reset().then(() => TrackPlayer.add({
             id,
-            url,
+            url: exists ? storedName : url,
             title,
             artist: castName,
             artwork: image ? image : this.props.cover
         }).then(() => TrackPlayer.play()))
-    }
-
-    downloadCast = (stamp) => {
-        let { id, enclosures: [{url}] } = this.props.episode;
-        let { castId } = this.props;
-        
-        RNBackgroundDownloader.download({
-            id,
-            url,
-            destination: `${RNBackgroundDownloader.directories.documents}/${castId}_${stamp}.mp3`
-        }).begin((expectedBytes) => {
-            ToastAndroid.show('Preparando download', ToastAndroid.SHORT);
-        }).progress((percent) => {
-            this.setState({...this.state, progress: percent * 100})
-            console.log(`Downloaded: ${percent * 100}%`);
-        }).done(() => {
-            this.setState({...this.state, progress: null})
-            ToastAndroid.show('Download finalizado', ToastAndroid.SHORT);
-        }).error((error) => {
-            console.log('Download canceled due to error: ', error);
-        });
     }
 }

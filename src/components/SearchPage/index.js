@@ -28,12 +28,12 @@ export default class Search extends Component {
         
         return (
             <View>
-                <NavigationEvents onDidFocus={this.focusReset}/>
+                {/* <NavigationEvents onDidFocus={this.focusReset}/> */}
                 <View style={{width: "100%", height: 50, paddingHorizontal: 8, flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: "#3C3C47"}}>
                     <Icon name="search" size={24} color="#9d9d9d" style={{width: iconWidth, textAlign: "center"}}/>
                     <TextInput onSubmitEditing={() => this.fetchQuery(searchInput)} onChangeText={text => this.updateInput(text)} value={searchInput} placeholder="Pesquisar" placeholderTextColor="#9d9d9d" style={{color: "#fff", width: width - (iconWidth * 2) - 16, height: "100%", paddingVertical: 0, flexDirection: "row", alignItems: "center", fontSize: 18, fontStyle: searchInput.length > 0 ? "normal" : "italic"}}/>
-                    <TouchableNativeFeedback onPress={() => this.fetchQuery(searchInput)}>
-                        <Icon name={searchInput.length > 0 ? "arrow-forward" : queryingStatus ? "close" : null} size={24} color="#fff" style={{width: iconWidth, textAlign: "center"}}/>
+                    <TouchableNativeFeedback onPress={() => queryingStatus ? this.setState({...this.state, queryingStatus: !queryingStatus}) : this.fetchQuery(searchInput)}>
+                        <Icon name={searchInput.length > 0 ? queryingStatus ? "close" : "arrow-forward" : queryingStatus ? "close" : null} size={24} color="#fff" style={{width: iconWidth, textAlign: "center"}}/>
                     </TouchableNativeFeedback>
                 </View>
                 {
@@ -84,9 +84,7 @@ export default class Search extends Component {
         getFeeds(searchInput)
             .then((data) => this.setState({
                 ...this.state, 
-                results: data.map(({trackId, artworkUrl60, artworkUrl600, trackName, artistName, feedUrl}) => (
-                    { trackId, artworkUrl60, artworkUrl600, trackName, artistName, feedUrl }
-                )), 
+                results: data, 
                 searching: false
             }))
             .then(async () => {

@@ -1,10 +1,14 @@
 import React, { createContext, Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage'
 import { colorsFromUrl } from 'react-native-vibrant-color';
+import * as rssParser from 'react-native-rss-parser';
+import RNBackgroundDownloader from 'react-native-background-downloader';
 import RNFetchBlob from 'rn-fetch-blob'
 
+const { fs: { createFile, unlink } } = RNFetchBlob;
+const { documents } = RNBackgroundDownloader.directories;
+
 export const FeedContext = createContext();
-const { fs: { createFile, readFile, dirs: { DocumentDir } } } = RNFetchBlob;
 
 class FeedContextProvider extends Component {
     state = {
@@ -12,7 +16,6 @@ class FeedContextProvider extends Component {
     }
 
     componentDidMount = () => {
-        console.log(RNFetchBlob.fs)
         return AsyncStorage.getItem("storedCasts").then(casts => this.setState({...this.state, storedCasts: JSON.parse(casts)}))
     }
 
@@ -21,10 +24,17 @@ class FeedContextProvider extends Component {
 
         if(data.map(({trackId}) => trackId).includes(cast.trackId)){
             data = data.filter(({trackId}) => trackId !== cast.trackId);
+            
+            unlink(`${documents}/${cast.trackId}.json`)
         }else{
             let colors = await colorsFromUrl(cast.artworkUrl600);
-
             data.push({...cast, colors});
+
+            fetch(cast.feedUrl)
+                .then((response) => response.text())
+                .then((responseData) => rssParser.parse(responseData))
+                .then((rss) => createFile(`${documents}/${cast.trackId}.json`, JSON.stringify(rss), "utf8"))
+                .catch(err => console.log(Object.keys(err).map(key => err[key])))
         }
 
         return AsyncStorage.setItem("storedCasts", JSON.stringify(data))

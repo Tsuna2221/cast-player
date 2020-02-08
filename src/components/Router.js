@@ -8,6 +8,7 @@ import Explore from "./Explore"
 import CastPage from "./CastPage"
 import Search from "./SearchPage"
 import Feed from "./Feed"
+import DownloadPage from "./DownloadPage"
 
 const StackRoutes = {
     Explorar: {
@@ -20,7 +21,7 @@ const StackRoutes = {
         screen: (props) => <Temp {...props} headLabel="Feeds"><Feed {...props}/></Temp>
     },
     Downloads: {
-        screen: (props) => <Temp {...props} headLabel="Downloads"></Temp>
+        screen: (props) => <Temp {...props} headLabel="Downloads"><DownloadPage {...props}/></Temp>
     },
     CastPage: {
         screen: (props) => <Temp {...props}><CastPage {...props}/></Temp>
@@ -28,7 +29,7 @@ const StackRoutes = {
 }
 
 const StackConfig = {
-    initialRouteName: 'Buscar',
+    initialRouteName: 'Downloads',
     headerMode: 'none',
     unmountInactiveRoutes: true,
     transitionConfig: () => ({

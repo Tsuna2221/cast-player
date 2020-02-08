@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import { View, Image, Text, TouchableOpacity } from 'react-native';
+import { View, Image, Text, TouchableOpacity, Dimensions } from 'react-native';
 import Icon from "react-native-vector-icons/MaterialIcons"
 import { NavigationActions, StackActions  } from 'react-navigation';
+
+const { width } = Dimensions.get("window");
 
 export default class FooterNavigator extends Component {
     render() {
@@ -24,7 +26,7 @@ export default class FooterNavigator extends Component {
 
                         return (
                             <TouchableOpacity key={label + index} onPress={selected !== label ? () => navigate(dispatchAction) : null}>
-                                <View style={{flexDirection: "column", alignItems: "center", justifyContent: "center", width: 50}}>
+                                <View style={{flexDirection: "column", alignItems: "center", justifyContent: "center", width: width / 4}}>
                                     <Icon name={icon} size={22} color={selected === label ? "#FF0055" : "#C7C7C7"} />
                                     <Text style={{color: selected === label ? "#FF0055" : "#C7C7C7", fontSize: 11}}>{label}</Text>
                                 </View>

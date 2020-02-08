@@ -1,8 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { Keyboard, Animated, ScrollView, View, Text, SafeAreaView } from 'react-native';
+import RNBackgroundDownloader from 'react-native-background-downloader';
 
 //Context
 import FeedContextProvider from '../contexts/FeedContext'
+import DownloadContextProvider, { DownloadContext } from '../contexts/DownloadContext'
 
 //Style
 import style from './Explore/style'
@@ -14,10 +16,13 @@ import FooterPlayer from './FooterPlayer'
 
 //Client
 import { getMainCasts } from "../client";
+import AsyncStorage from '@react-native-community/async-storage';
 
 const {  } = style
 
 export default class Temp extends Component {
+    static contextType = DownloadContext;
+
     constructor() {
         super()
         this.state = {
@@ -49,41 +54,40 @@ export default class Temp extends Component {
         })
 
         return (
-            <FeedContextProvider>
-                <Fragment>
-                    <View style={{backgroundColor: "#0E0E16", flex: 1, height: "100%"}}>
-                        <Header navigation={navigation} label={headLabel} textOpacity={textOpacity} headerHeight={headerHeight}/>
-                        <ScrollView contentContainerStyle={{paddingTop: headLabel ? 115 : btnHeight, paddingBottom: 10}} onScroll={Animated.event(
-                            [{ nativeEvent: {
-                                contentOffset: {
-                                    y: this.state.scrollY
+            <DownloadContextProvider>
+                <FeedContextProvider>
+                    <Fragment>
+                        <View style={{backgroundColor: "#0E0E16", flex: 1, height: "100%"}}>
+                            <Header navigation={navigation} label={headLabel} textOpacity={textOpacity} headerHeight={headerHeight}/>
+                            <ScrollView contentContainerStyle={{paddingTop: headLabel ? 115 : btnHeight, paddingBottom: 10}} onScroll={Animated.event(
+                                [{ nativeEvent: {
+                                    contentOffset: {
+                                        y: this.state.scrollY
+                                    }
                                 }
-                            }
-                            }])} scrollEventThrottle={16}
-                        >
-                            <SafeAreaView style={{flex: 1}}>
-                                {this.props.children}
-                            </SafeAreaView>
-                        </ScrollView>
-                    </View>
-                    {
-                        !keyboardStatus ? 
-                            <Fragment>
-                                <FooterPlayer/>
-                                <FooterNavigator navigate={this.props.navigation.dispatch} selected={headLabel}/>
-                            </Fragment>
-                        :
-                            null
-                    }
-                </Fragment>
-            </FeedContextProvider>
+                                }])} scrollEventThrottle={16}
+                            >
+                                <SafeAreaView style={{flex: 1}}>
+                                    {this.props.children}
+                                </SafeAreaView>
+                            </ScrollView>
+                        </View>
+                        {
+                            !keyboardStatus ? 
+                                <Fragment>
+                                    <FooterPlayer/>
+                                    <FooterNavigator navigate={this.props.navigation.dispatch} selected={headLabel}/>
+                                </Fragment>
+                            :
+                                null
+                        }
+                    </Fragment>
+                </FeedContextProvider>
+            </DownloadContextProvider>
         );
     }
 
     // componentDidMount = () => getMainCasts().then(res => this.setState({mainFeed: res}))
-    componentDidMount = () => {
-        
-    }
     
     componentWillUnmount = () => {
         this.keyboardDidShowListener.remove();
