@@ -5,6 +5,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { NavigationEvents } from 'react-navigation';
 import style from './style'
 
+//Context
+import { FeedContext } from '../../contexts/FeedContext'
+
 //Components;
 import RecentSearches from './RecentSearches'
 import QueryResults from './QueryResults'
@@ -17,10 +20,12 @@ const {  } = style
 const { height, width } = Dimensions.get('window');
 
 export default class Search extends Component {
+    static contextType = FeedContext;
+
     render() {
         const { props: { navigation }, state: { searchInput, recentResults, recentSearches, queryingStatus, searching, results } } = this;
         const iconWidth = (100 / width) * 100;
-
+        
         return (
             <View>
                 <NavigationEvents onDidFocus={this.focusReset}/>
@@ -41,7 +46,7 @@ export default class Search extends Component {
                         <Fragment>
                             {
                                 recentResults.length > 0 ?
-                                <QueryResults fromResults={true} navigation={navigation} results={recentResults}/>
+                                    <QueryResults fromResults={true} navigation={navigation} results={recentResults}/>
                                 :
                                 null
                             }
@@ -77,7 +82,13 @@ export default class Search extends Component {
         this.setState({...this.state, queryingStatus: true, searching: true})
 
         getFeeds(searchInput)
-            .then((data) => this.setState({...this.state, results: data, searching: false}))
+            .then((data) => this.setState({
+                ...this.state, 
+                results: data.map(({trackId, artworkUrl60, artworkUrl600, trackName, artistName, feedUrl}) => (
+                    { trackId, artworkUrl60, artworkUrl600, trackName, artistName, feedUrl }
+                )), 
+                searching: false
+            }))
             .then(async () => {
                 if(!fromResults){
                     const searchStorage = await AsyncStorage.getItem("recentSearches");

@@ -1,8 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import Icon from "react-native-vector-icons/MaterialIcons"
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Temp from './Temp'
@@ -10,6 +7,7 @@ import Temp from './Temp'
 import Explore from "./Explore"
 import CastPage from "./CastPage"
 import Search from "./SearchPage"
+import Feed from "./Feed"
 
 const StackRoutes = {
     Explorar: {
@@ -19,7 +17,7 @@ const StackRoutes = {
         screen: (props) => <Temp {...props} headLabel="Buscar"><Search {...props}/></Temp>
     },
     Feeds: {
-        screen: (props) => <Temp {...props} headLabel="Feeds"></Temp>
+        screen: (props) => <Temp {...props} headLabel="Feeds"><Feed {...props}/></Temp>
     },
     Downloads: {
         screen: (props) => <Temp {...props} headLabel="Downloads"></Temp>

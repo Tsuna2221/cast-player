@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Keyboard, Animated, ScrollView, View, Text, SafeAreaView } from 'react-native';
 
+//Context
+import FeedContextProvider from '../contexts/FeedContext'
+
 //Style
 import style from './Explore/style'
 
@@ -46,32 +49,34 @@ export default class Temp extends Component {
         })
 
         return (
-            <Fragment>
-                <View style={{backgroundColor: "#0E0E16", flex: 1, height: "100%"}}>
-                    <Header navigation={navigation} label={headLabel} textOpacity={textOpacity} headerHeight={headerHeight}/>
-                    <ScrollView contentContainerStyle={{paddingTop: headLabel ? 115 : btnHeight, paddingBottom: 10}} onScroll={Animated.event(
-                        [{ nativeEvent: {
-                            contentOffset: {
-                                y: this.state.scrollY
+            <FeedContextProvider>
+                <Fragment>
+                    <View style={{backgroundColor: "#0E0E16", flex: 1, height: "100%"}}>
+                        <Header navigation={navigation} label={headLabel} textOpacity={textOpacity} headerHeight={headerHeight}/>
+                        <ScrollView contentContainerStyle={{paddingTop: headLabel ? 115 : btnHeight, paddingBottom: 10}} onScroll={Animated.event(
+                            [{ nativeEvent: {
+                                contentOffset: {
+                                    y: this.state.scrollY
+                                }
                             }
-                        }
-                        }])} scrollEventThrottle={16}
-                    >
-                        <SafeAreaView style={{flex: 1}}>
-                            {this.props.children}
-                        </SafeAreaView>
-                    </ScrollView>
-                </View>
-                {
-                    !keyboardStatus ? 
-                        <Fragment>
-                            <FooterPlayer/>
-                            <FooterNavigator navigate={this.props.navigation.dispatch} selected={headLabel}/>
-                        </Fragment>
-                    :
-                        null
-                }
-            </Fragment>
+                            }])} scrollEventThrottle={16}
+                        >
+                            <SafeAreaView style={{flex: 1}}>
+                                {this.props.children}
+                            </SafeAreaView>
+                        </ScrollView>
+                    </View>
+                    {
+                        !keyboardStatus ? 
+                            <Fragment>
+                                <FooterPlayer/>
+                                <FooterNavigator navigate={this.props.navigation.dispatch} selected={headLabel}/>
+                            </Fragment>
+                        :
+                            null
+                    }
+                </Fragment>
+            </FeedContextProvider>
         );
     }
 
