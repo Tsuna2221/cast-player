@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { View, Image, FlatList, Text, ActivityIndicator, Dimensions, TextInput, TouchableNativeFeedback } from 'react-native';
 import AsyncStorage from "@react-native-community/async-storage"
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { NavigationEvents } from 'react-navigation';
 import style from './style'
 
 //Context
@@ -29,9 +28,9 @@ export default class Search extends Component {
         return (
             <View>
                 {/* <NavigationEvents onDidFocus={this.focusReset}/> */}
-                <View style={{width: "100%", height: 50, paddingHorizontal: 8, flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: "#3C3C47"}}>
-                    <Icon name="search" size={24} color="#9d9d9d" style={{width: iconWidth, textAlign: "center"}}/>
-                    <TextInput onSubmitEditing={() => this.fetchQuery(searchInput)} onChangeText={text => this.updateInput(text)} value={searchInput} placeholder="Pesquisar" placeholderTextColor="#9d9d9d" style={{color: "#fff", width: width - (iconWidth * 2) - 16, height: "100%", paddingVertical: 0, flexDirection: "row", alignItems: "center", fontSize: 18, fontStyle: searchInput.length > 0 ? "normal" : "italic"}}/>
+                <View style={{margin: 15, borderRadius: 13, height: 50, paddingHorizontal: 8, flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: "#1D2939"}}>
+                    <Icon name="search" size={24} color="#9d9d9d" style={{width: iconWidth, marginHorizontal: 7, textAlign: "center"}}/>
+                    <TextInput onSubmitEditing={() => this.fetchQuery(searchInput)} onChangeText={text => this.updateInput(text)} value={searchInput} placeholder="Pesquisar" placeholderTextColor="#9d9d9d" style={{color: "#B7BABD", width: width - (iconWidth * 2) - 75, height: "100%", paddingVertical: 0, flexDirection: "row", alignItems: "center", fontSize: 18, fontStyle: searchInput.length > 0 ? "normal" : "italic"}}/>
                     <TouchableNativeFeedback onPress={() => queryingStatus ? this.setState({...this.state, queryingStatus: !queryingStatus}) : this.fetchQuery(searchInput)}>
                         <Icon name={searchInput.length > 0 ? queryingStatus ? "close" : "arrow-forward" : queryingStatus ? "close" : null} size={24} color="#fff" style={{width: iconWidth, textAlign: "center"}}/>
                     </TouchableNativeFeedback>

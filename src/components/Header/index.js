@@ -14,7 +14,7 @@ export default class Header extends Component {
 
         return (
             <Animated.View style={{width: "100%", height: label ? headerHeight : 62.1, position: "absolute", overflow: "hidden", zIndex: 100}}>
-                <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#FF0055', '#046CA2']} style={[mainHeader]}>
+                <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#FF0055', '#3E8BF0']} style={[mainHeader]}>
                     <View style={[buttonContainer]}>
                         <TouchableOpacity onPress={() => label ? null : navigation.goBack()}>
                             <Icon size={label ? 30 : 26} name={label ? "menu" : "arrow-left"} color="#fff"/>

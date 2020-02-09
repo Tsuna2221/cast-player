@@ -2,10 +2,10 @@ export default style = {
     footContainer: {
         width: "100%",
         maxWidth: "100%", 
-        height: 58, 
-        borderBottomColor: "#2C2B3B", 
+        height: 62, 
+        borderBottomColor: "#fff", 
         borderBottomWidth: .5, 
-        backgroundColor: "#0B0A17",
+        backgroundColor: "#1D2939",
         flexDirection: "row",
         justifyContent: "space-around",
         paddingHorizontal: 14

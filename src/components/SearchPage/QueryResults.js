@@ -9,7 +9,7 @@ import { FeedContext } from '../../contexts/FeedContext'
 
 // Styles
 import style from './style'
-const {  } = style;
+const { container } = style;
 
 const { width } = Dimensions.get('window');
 const itemHeight = 64;
@@ -39,7 +39,7 @@ export default QueryResults = ({results, navigation, fromResults}) => {
         <Fragment>
             {
                 fromResults ? 
-                    <Text style={{color: "#fff", paddingHorizontal: 20, fontSize: 20, fontWeight: "bold", marginTop: 18}}>Resultados Recentes</Text>
+                    <Text style={{color: "#C5CACF", paddingHorizontal: 20, fontSize: 20, fontWeight: "bold", marginTop: 18}}>Resultados Recentes</Text>
                 :
                     null
             }
@@ -51,16 +51,16 @@ export default QueryResults = ({results, navigation, fromResults}) => {
                 getItemCount={() => results.length}
                 renderItem={({item}, index) => (
                     <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#3C3C47')} onPress={() => getDetailsAndNavigate(item, navigation.navigate, fromResults)}>
-                        <View style={{width, paddingHorizontal: 20, height: itemHeight + 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                        <View style={[container, {height: itemHeight + 16}]}>
                             <View style={{flexDirection: "row", alignItems: "center"}}>
-                                <Image style={{width: itemHeight, height: itemHeight, marginRight: 14}} source={{uri: item.artworkUrl60 }}/>
+                                <Image style={{width: itemHeight - 10, height: itemHeight - 10, marginRight: 14}} source={{uri: item.artworkUrl60 }}/>
                                 <View style={{width: "63%"}}>
-                                    <Text numberOfLines={1} style={{color: "#fff", fontSize: 17, fontWeight: "bold", marginBottom: 2}}>{item.trackName}</Text>
-                                    <Text numberOfLines={1} style={{color: "#9D9D9D", fontSize: 16, marginBottom: 2}}>{item.artistName}</Text>
+                                    <Text numberOfLines={1} style={{color: "#C5CACF", fontSize: 17, fontWeight: "bold", marginBottom: 2}}>{item.trackName}</Text>
+                                    <Text numberOfLines={1} style={{color: "#6A727D", fontSize: 16, marginBottom: 2}}>{item.artistName}</Text>
                                 </View>
                             </View>
                             <TouchableNativeFeedback onPress={() => saveCast(item)}>
-                                <Icon name={storeIds.includes(item.trackId) ? "remove" : "add"} color="#fff" size={25}/>
+                                <Icon name={storeIds.includes(item.trackId) ? "remove" : "add"} color="#C5CACF" size={25}/>
                             </TouchableNativeFeedback>
                         </View>
                     </TouchableNativeFeedback>

@@ -1,17 +1,23 @@
+import { Dimensions } from "react-native"
+
+const { width } = Dimensions.get("window")
+
 export default style = {
     rowAlign: {
         flexDirection: "row",
         alignItems: "center"
     },
     textTitle: {
-        fontSize: 16.5, 
-        width: "62%", 
-        lineHeight: 25
+        fontSize: 14.5, 
+        lineHeight: 19,
+        flexWrap: "wrap",
+        fontWeight: "bold"
     },
-    newContainer: {
-        backgroundColor: "#FF0055", 
-        borderRadius: 50, 
-        textAlign: "center", 
-        textAlignVertical: "center"
+    container: {
+        backgroundColor: "#1D2939", 
+        marginHorizontal: 20, 
+        marginVertical: 10, 
+        padding: 15, 
+        borderRadius: 10
     }
 }

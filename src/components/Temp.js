@@ -57,7 +57,7 @@ export default class Temp extends Component {
             <DownloadContextProvider>
                 <FeedContextProvider>
                     <Fragment>
-                        <View style={{backgroundColor: "#0E0E16", flex: 1, height: "100%"}}>
+                        <View style={{backgroundColor: "#151F2B", flex: 1, height: "100%"}}>
                             <Header navigation={navigation} label={headLabel} textOpacity={textOpacity} headerHeight={headerHeight}/>
                             <ScrollView contentContainerStyle={{paddingTop: headLabel ? 115 : btnHeight, paddingBottom: 10}} onScroll={Animated.event(
                                 [{ nativeEvent: {

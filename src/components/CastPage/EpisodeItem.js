@@ -13,7 +13,7 @@ import { DownloadContext } from '../../contexts/DownloadContext'
 
 import style from './style'
 
-const { rowAlign, textTitle, newContainer } = style
+const { rowAlign, textTitle, container } = style
 const { width } = Dimensions.get('window');
 
 export default class EpisodeItem extends Component {
@@ -21,56 +21,43 @@ export default class EpisodeItem extends Component {
 
     render() {
         const { downloadCast, downloads } = this.context;
-        const { cover, castId, episode: { title, id, published, enclosures: [{ url, length, mimeType }], itunes: { duration, image } } } = this.props 
-        const color = "#E1E1E1"
-        const newDimensions = { marginLeft: 5.5, marginRight: 18, width: 44 }
-        const interval = width - (Object.keys(newDimensions).map(key => newDimensions[key]).reduce((total, num) => total + num) + 14)
+        const { cover, castId, episode: { title, published, itunes: { duration, image } } } = this.props 
         const parsedDate = published.replace(/\s\+[0-9]+/, "");
-        const date = new Date(parsedDate)
+        const date = new Date(parsedDate);
         const { locale, stamp } = { locale: date.toLocaleDateString(), stamp: +date }
         const downloadMap = downloads.filter(({status}) => status === "complete").map(({name}) => name).includes(`${castId}_${stamp}`);
         
         return (
-            <TouchableNativeFeedback onPress={() => this.playCast(stamp, downloadMap)} background={TouchableNativeFeedback.Ripple('#3C3C47')}>
-                <View style={{width: "100%", paddingHorizontal: 14}}>
-                    <View style={[rowAlign, { justifyContent: "space-between" }]}>
-                        <FastImage resizeMode={FastImage.resizeMode.contain} style={{width: 55, height: 55}} source={{uri: image ? image : cover}}/>
-                        <Text numberOfLines={2} style={[textTitle, {color, flexDirection: "row", alignItems: "center"}]}>{title}</Text>
-                        {
-                            !this.state.progress ?
-                                <TouchableNativeFeedback onPress={() => downloadCast(stamp, castId, this.props.episode)}>
-                                    <MCIcons name="dots-horizontal" color={color} size={30}/>
-                                </TouchableNativeFeedback>
-                            :
-                            <Text style={{color: "#fff"}}>{this.state.progress}%</Text>
-                        }
-                    </View>
-                    <View style={rowAlign}> 
-                        <Text style={[newContainer, newDimensions, {color, height: 16}]}>Novo</Text>
-                        <View style={[rowAlign, {width: interval, justifyContent: "space-between", borderBottomColor: "#3c3c3c", borderBottomWidth: 1, paddingVertical: 12}]}>
-                            <View style={{flexDirection: "row"}}>
-                                <View style={rowAlign}>
-                                    <Icon size={21} name="event" color={color}/>
-                                    <Text style={{color, fontSize: 14.5, marginLeft: 3}}>{locale}</Text>
+                <View style={[rowAlign, container, { justifyContent: "space-between" }]}>
+                    <TouchableNativeFeedback onPress={() => this.playCast(stamp, downloadMap)} background={TouchableNativeFeedback.Ripple('#3C3C47')}>
+                        <View style={{flexDirection: "row"}}>
+                            <FastImage resizeMode={FastImage.resizeMode.contain} style={{width: 68, height: 68}} source={{uri: image ? image : cover}}/>
+                            <View style={{width: "66%", flexDirection: "column", justifyContent: "center", paddingLeft: 12}}>
+                                <Text numberOfLines={2} style={[textTitle, {color: "#C5CACF", flexDirection: "row", alignItems: "center"}]}>{title}</Text>
+                                
+                                <View style={{flexDirection: "row", marginTop: 6, alignItems: "center"}}>
+                                    {
+                                        downloadMap ?
+                                            <Icon style={{marginRight: 4}} name="file-download" size={19} color="#C5CACF"/>
+                                        :
+                                        null
+                                    }
+                                    <View style={rowAlign}>
+                                        <Icon size={19} name="event" color="#C5CACF"/>
+                                        <Text style={{color: "#C5CACF", fontSize: 13, marginLeft: 3}}>{locale}</Text>
+                                    </View>
+                                    <View style={[rowAlign, {marginLeft: 6}]}>
+                                        <Icon size={19} name="timer" color="#C5CACF"/>
+                                        <Text style={{color: "#C5CACF", fontSize: 13, marginLeft: 3}}>{duration}</Text>
+                                    </View>
                                 </View>
-                                <View style={[rowAlign, {marginLeft: 6}]}>
-                                    <Icon size={21} name="timer" color={color}/>
-                                    <Text style={{color, fontSize: 14.5, marginLeft: 3}}>{duration}</Text>
-                                </View>
-                            </View>
-                            <View style={{flexDirection: "row"}}>
-                                {
-                                    downloadMap ?
-                                        <Icon name="file-download" size={21} color="#fff"/>
-                                    :
-                                    null
-                                }
-                                <Icon name="favorite-border" size={21} color={color} style={{marginLeft: 6, paddingRight: 18}}/>
                             </View>
                         </View>
-                    </View>
+                    </TouchableNativeFeedback>
+                    <TouchableNativeFeedback onPress={() => downloadCast(stamp, castId, this.props.episode)} style={[rowAlign]}>
+                        <Icon name="favorite-border" size={23} color="#C5CACF" style={{marginLeft: 6}}/>
+                    </TouchableNativeFeedback>
                 </View>
-            </TouchableNativeFeedback>
         );
     }
 

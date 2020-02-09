@@ -16,7 +16,7 @@ export default class FooterNavigator extends Component {
         ]
 
         return (
-            <View style={{width: "100%", height: 45, backgroundColor: "#0B0A17", flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
+            <View style={{width: "100%", height: 50, backgroundColor: "#1D2939", flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
                 {
                     navItems.map(({label, icon}, index) => {
                         const dispatchAction = StackActions.reset({
@@ -27,8 +27,8 @@ export default class FooterNavigator extends Component {
                         return (
                             <TouchableOpacity key={label + index} onPress={selected !== label ? () => navigate(dispatchAction) : null}>
                                 <View style={{flexDirection: "column", alignItems: "center", justifyContent: "center", width: width / 4}}>
-                                    <Icon name={icon} size={22} color={selected === label ? "#FF0055" : "#C7C7C7"} />
-                                    <Text style={{color: selected === label ? "#FF0055" : "#C7C7C7", fontSize: 11}}>{label}</Text>
+                                    <Icon name={icon} size={22} color={selected === label ? "#3E8BF0" : "#C5CACF"} />
+                                    <Text style={{color: selected === label ? "#3E8BF0" : "#C5CACF", fontSize: 11}}>{label}</Text>
                                 </View>
                             </TouchableOpacity>
                         )

@@ -26,7 +26,8 @@ class DownloadContextProvider extends Component {
 
     checkExisting = async () => {
         let downloading = await RNBackgroundDownloader.checkForExistingDownloads();
-        let downloads = await AsyncStorage.getItem("downloads")
+        let downloads = await AsyncStorage.getItem("downloads");
+        console.log(JSON.parse(downloads))
     
         for (let task of downloading) {
             task.progress(() => {
@@ -43,13 +44,14 @@ class DownloadContextProvider extends Component {
     }
 
     downloadCast = (timestamp, castId, episode) => {
+        ToastAndroid.show('Preparando download', ToastAndroid.SHORT);
+
         let { id, enclosures: [{url}] } = episode;
         let destination = `${RNBackgroundDownloader.directories.documents}/media/${castId}_${timestamp}.mp3`
         
         let task = RNBackgroundDownloader.download({id, url, destination}).begin(() => {
             this.addStoredDownloads(`${castId}_${timestamp}`, episode)
 
-            ToastAndroid.show('Preparando download', ToastAndroid.SHORT);
         }).progress(() => {
             this.updateTask(task);
         }).done(() => {
