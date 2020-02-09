@@ -27,7 +27,8 @@ class DownloadContextProvider extends Component {
     checkExisting = async () => {
         let downloading = await RNBackgroundDownloader.checkForExistingDownloads();
         let downloads = await AsyncStorage.getItem("downloads");
-        console.log(JSON.parse(downloads))
+
+        console.log(downloading, JSON.parse(downloads))
     
         for (let task of downloading) {
             task.progress(() => {
@@ -49,17 +50,18 @@ class DownloadContextProvider extends Component {
         let { id, enclosures: [{url}] } = episode;
         let destination = `${RNBackgroundDownloader.directories.documents}/media/${castId}_${timestamp}.mp3`
         
-        let task = RNBackgroundDownloader.download({id, url, destination}).begin(() => {
-            this.addStoredDownloads(`${castId}_${timestamp}`, episode)
-
-        }).progress(() => {
-            this.updateTask(task);
-        }).done(() => {
-            this.completeDownload(`${castId}_${timestamp}`, "name")
-            ToastAndroid.show('Download finalizado', ToastAndroid.SHORT);
-        }).error((error) => {
-            ToastAndroid.show('Download canceled due to error: ', error, ToastAndroid.SHORT);
-        });
+        let task = this.addStoredDownloads(`${castId}_${timestamp}`, episode, castId).then(() => (
+            RNBackgroundDownloader.download({id, url, destination}).begin(() => {
+               // none 
+            }).progress(() => {
+                this.updateTask(task);
+            }).done(() => {
+                this.completeDownload(`${castId}_${timestamp}`, "name")
+                ToastAndroid.show('Download finalizado', ToastAndroid.SHORT);
+            }).error((error) => {
+                ToastAndroid.show('Download canceled due to error: ', error, ToastAndroid.SHORT);
+            })
+        ))
     }
 
     toggleTaskState = async (task) => {
@@ -71,9 +73,17 @@ class DownloadContextProvider extends Component {
 
     cancelTask = async (task) => {
         task.stop();
-
         ToastAndroid.show("Download cancelado", ToastAndroid.LONG);
-        return this.setState({...this.state, downloading: await RNBackgroundDownloader.checkForExistingDownloads()})
+
+        return AsyncStorage.getItem("downloads").then((downloads) => {
+            let list = JSON.parse(downloads) || []
+            let filteredList = list.filter(({episode}) => episode.id !== task.id)
+
+            return AsyncStorage.setItem("downloads", JSON.stringify(filteredList)).then(async () => (
+                this.setState({...this.state, downloads: filteredList, downloading: await RNBackgroundDownloader.checkForExistingDownloads()})
+            ))
+        })
+
     }
 
     updateTask = (task) => {
@@ -84,16 +94,16 @@ class DownloadContextProvider extends Component {
         return this.setState({...this.state, downloading: tasksCopy});
     }
 
-    addStoredDownloads = (name, episode) => {
+    addStoredDownloads = async (name, episode, castId) => (
         AsyncStorage.getItem("downloads").then(downloads => {
             let list = JSON.parse(downloads) || []
 
-            list.push({name, episode, status: "downloading"})
-            AsyncStorage.setItem("downloads", JSON.stringify(list))
-        })
-    }
+            list.unshift({name, episode, castId, status: "downloading"})
+            return AsyncStorage.setItem("downloads", JSON.stringify(list));
+        }).catch(err => console.log(err))
+    )
 
-    completeDownload = (name, type) => {
+    completeDownload = (name, type) => (
         AsyncStorage.getItem("downloads").then(downloads => {
             let downloadList = JSON.parse(downloads) || [];
             let list = downloadList.map((episode) => {
@@ -109,9 +119,10 @@ class DownloadContextProvider extends Component {
                 return episode;
             });
 
-            AsyncStorage.setItem("downloads", JSON.stringify(list))
+            return AsyncStorage.setItem("downloads", JSON.stringify(list))
+                .then(async () => this.setState({...this.state, downloads: list, downloading: await RNBackgroundDownloader.checkForExistingDownloads()}))
         })
-    }
+    )
 
     render(){
         return (

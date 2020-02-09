@@ -21,7 +21,7 @@ export default class EpisodeItem extends Component {
 
     render() {
         const { downloadCast, downloads } = this.context;
-        const { cover, castId, episode: { title, published, itunes: { duration, image } } } = this.props 
+        const { fromDownload, cover, castId, episode: { title, published, itunes: { duration, image } } } = this.props 
         const parsedDate = published.replace(/\s\+[0-9]+/, "");
         const date = new Date(parsedDate);
         const { locale, stamp } = { locale: date.toLocaleDateString(), stamp: +date }
@@ -38,7 +38,7 @@ export default class EpisodeItem extends Component {
                                 <View style={{flexDirection: "row", marginTop: 6, alignItems: "center"}}>
                                     {
                                         downloadMap ?
-                                            <Icon style={{marginRight: 4}} name="file-download" size={19} color="#C5CACF"/>
+                                            <Icon style={{marginRight: 4}} name="save" size={19} color="#C5CACF"/>
                                         :
                                         null
                                     }
@@ -54,8 +54,13 @@ export default class EpisodeItem extends Component {
                             </View>
                         </View>
                     </TouchableNativeFeedback>
-                    <TouchableNativeFeedback onPress={() => downloadCast(stamp, castId, this.props.episode)} style={[rowAlign]}>
-                        <Icon name="favorite-border" size={23} color="#C5CACF" style={{marginLeft: 6}}/>
+                    <TouchableNativeFeedback onPress={() => (
+                        fromDownload || downloadMap ? 
+                            this.playCast(stamp, downloadMap)
+                        :
+                            downloadCast(stamp, castId, {...this.props.episode, image: image ? image : cover}
+                    ))} style={[rowAlign]}>
+                        <Icon name={fromDownload || downloadMap ? "play-arrow" : "file-download"} size={23} color="#C5CACF" style={{marginLeft: 6}}/>
                     </TouchableNativeFeedback>
                 </View>
         );
